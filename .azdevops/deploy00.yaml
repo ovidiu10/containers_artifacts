@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-poi-deployment
+  labels:
+    app: tripinsights-poi-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-poi
+  template:
+    metadata:
+      labels:
+        app: tripinsights-poi
+    spec:
+      containers:
+      - name: tripinsights-poi
+        image: registrydtm0276.azurecr.io/tripinsights/poi:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/mnt/secrets"
+          readOnly: true                          
+        ports:
+        - containerPort: 80        
+      volumes:
+      - name: secrets-store01-inline
+        csi: 
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "azure-kvname-user-msi"                                                       

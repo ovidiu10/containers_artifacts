@@ -30,25 +30,25 @@ jobs:
           docker run -d \
             --network $(PROJECT_NAME) \
             -e 'ACCEPT_EULA=Y' \
-            -e 'MSSQL_SA_PASSWORD=localtestpw123@' \
-            --name 'sqltestdb' \
+            -e 'MSSQL_SA_PASSWORD=Password#1234!' \
+            --name 'otsql1' \
             -p 1433:1433 \
             mcr.microsoft.com/mssql/server:2017-latest
 
           sleep 20
           docker ps
-          docker logs sqltestdb
+          docker logs otsql1
 
-          docker exec sqltestdb /opt/mssql-tools/bin/sqlcmd \
-            -S localhost -U SA -P 'localtestpw123@' \
+          docker exec otsql1 /opt/mssql-tools/bin/sqlcmd \
+            -S localhost -U SA -P 'Password#1234!' \
             -Q "CREATE DATABASE mydrivingDB"
 
           docker run -d \
             --network $(PROJECT_NAME) \
             --name dataload \
-            -e "SQLFQDN=sqltestdb" \
+            -e "SQLFQDN=otsql1" \
             -e "SQLUSER=sa" \
-            -e "SQLPASS=localtestpw123@" \
+            -e "SQLPASS=Password#1234!" \
             -e "SQLDB=mydrivingDB" \
             vyta/data-load:v1
 
@@ -61,8 +61,8 @@ jobs:
             --network $(PROJECT_NAME) \
             -p 8080:80 \
             --name poi \
-            -e "SQL_PASSWORD=localtestpw123@" \
-            -e "SQL_SERVER=sqltestdb" \
+            -e "SQL_PASSWORD=Password#1234!" \
+            -e "SQL_SERVER=otsql1" \
             -e "SQL_USER=sa" \
             -e "ASPNETCORE_ENVIRONMENT=Development" \
             tripinsights/poi:1.0
@@ -71,7 +71,7 @@ jobs:
             --network $(PROJECT_NAME) \
             -p 8081:80 \
             --name trips \
-            -e "SQL_PASSWORD=localtestpw123@" \
+            -e "SQL_PASSWORD=Password#1234!" \
             -e "SQL_SERVER=sqltestdb" \
             -e "SQL_USER=sa" \
             -e "DOCS_URI=http://temp" \
@@ -81,7 +81,7 @@ jobs:
             --network $(PROJECT_NAME) \
             -p 8082:80 \
             --name user-java \
-            -e "SQL_PASSWORD=localtestpw123@" \
+            -e "SQL_PASSWORD=Password#1234!" \
             -e "SQL_SERVER=sqltestdb" \
             -e "SQL_USER=sa" \
             tripinsights/user-java:1.0 
@@ -90,7 +90,7 @@ jobs:
             --network $(PROJECT_NAME) \
             -p 8083:80 \
             --name userprofile \
-            -e "SQL_PASSWORD=localtestpw123@" \
+            -e "SQL_PASSWORD=Password#1234!" \
             -e "SQL_SERVER=sqltestdb" \
             -e "SQL_USER=sa" \
             tripinsights/userprofile:1.0

@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-base-deployment
+  labels:
+    app: tripinsights-base-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-base
+  template:
+    metadata:
+      labels:
+        app: tripinsights-base
+    spec:
+      containers:
+      - name: tripinsights-poi
+        image: registrydtm0276.azurecr.io/tripinsights/poi:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlpassword
+              key: sql_password 
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sqluser
+              key: sql_user  
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver
+              key: sql_server                                
+        ports:
+        - containerPort: 80
+      - name: tripinsights-trips
+        image: registrydtm0276.azurecr.io/tripinsights/trips:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlpassword
+              key: sql_password 
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sqluser
+              key: sql_user  
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver
+              key: sql_server             
+        ports:
+          - containerPort: 80            
+      - name: tripinsights-tripviewer
+        image: registrydtm0276.azurecr.io/tripinsights/tripviewer:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 80
+      - name: tripinsights-user-java
+        image: registrydtm0276.azurecr.io/tripinsights/user-java:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlpassword
+              key: sql_password 
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sqluser
+              key: sql_user  
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver
+              key: sql_server             
+        ports:
+          - containerPort: 80      
+      - name: tripinsights-userprofile
+        image: registrydtm0276.azurecr.io/tripinsights/userprofile:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlpassword
+              key: sql_password 
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sqluser
+              key: sql_user  
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver
+              key: sql_server             
+        ports:
+          - containerPort: 80

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-user-deployment
+  labels:
+    app: tripinsights-user-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-user
+  template:
+    metadata:
+      labels:
+        app: tripinsights-user
+    spec:
+      containers:
+      - name: tripinsights-user-java
+        image: registrydtm0276.azurecr.io/tripinsights/user-java:latest        
+        env:
+        - name: SQL_USER
+          value: sqladmindTm0276
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-password
+              key: sql-password
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sql-server
+              key: sql-server             
+        ports:
+          - containerPort: 80

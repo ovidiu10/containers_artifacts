@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripinsights-user-deployment
+  labels:
+    run: tripinsights-user-deployment
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: tripinsights-user-deployment

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-web-deployment
+  labels:
+    app: tripinsights-web-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-web
+  template:
+    metadata:
+      labels:
+        app: tripinsights-web
+    spec:
+      containers:   
+      - name: tripinsights-tripviewer
+        image: registrydtm0276.azurecr.io/tripinsights/tripviewer:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+          - name: TRIPS_API_ENDPOINT
+            value: "http://tripinsights-trips-deployment.api"
+          - name: USERPROFILE_API_ENDPOINT
+            value: "http://tripinsights-userprofile-deployment.api"
+        ports:
+          - containerPort: 80

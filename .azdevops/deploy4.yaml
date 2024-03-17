@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-userprofile-deployment
+  labels:
+    app: tripinsights-userprofile-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-userprofile
+  template:
+    metadata:
+      labels:
+        app: tripinsights-userprofile
+    spec:
+      containers:                  
+      - name: tripinsights-userprofile
+        image: registrydtm0276.azurecr.io/tripinsights/userprofile:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_USER
+          value: sqladmindTm0276
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-password
+              key: sql-password
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sql-server
+              key: sql-server
+        ports:
+          - containerPort: 80

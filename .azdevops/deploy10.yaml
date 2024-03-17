@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-trips-deployment
+  labels:
+    app: tripinsights-trips-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-trips
+  template:
+    metadata:
+      labels:
+        app: tripinsights-trips
+    spec:
+      containers:
+      - name: tripinsights-trips
+        image: registrydtm0276.azurecr.io/tripinsights/trips:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/secrets"
+          readOnly: true              
+        env:
+        - name: OPENAPI_DOCS_URI
+          value: "http://changeme"       
+        ports:
+          - containerPort: 80
+      volumes:
+      - name: secrets-store01-inline
+        csi: 
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "azure-kvname-user-msi"           
+          
+          

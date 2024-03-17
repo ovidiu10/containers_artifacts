@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-user-deployment
+  labels:
+    app: tripinsights-user-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-user
+  template:
+    metadata:
+      labels:
+        app: tripinsights-user
+    spec:
+      containers:
+      - name: tripinsights-user-java
+        image: registrydtm0276.azurecr.io/tripinsights/user-java:latest   
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/secrets"
+          readOnly: true              
+        ports:
+          - containerPort: 80
+      volumes:
+      - name: secrets-store01-inline
+        csi: 
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "azure-kvname-user-msi"           

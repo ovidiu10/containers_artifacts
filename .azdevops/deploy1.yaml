@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripinsights-trips-deployment
+  labels:
+    app: tripinsights-trips-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tripinsights-trips
+  template:
+    metadata:
+      labels:
+        app: tripinsights-trips
+    spec:
+      containers:
+      - name: tripinsights-trips
+        image: registrydtm0276.azurecr.io/tripinsights/trips:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: SQL_USER
+          value: sqladmindTm0276
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sql-password
+              key: sql-password
+        - name: SQL_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: sql-server
+              key: sql-server 
+        - name: OPENAPI_DOCS_URI
+          value: "http://changeme"       
+        ports:
+          - containerPort: 80
